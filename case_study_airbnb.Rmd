@@ -1,0 +1,37 @@
+---
+title: "airbnb"
+author: "Seonyoung Park (sp3804)"
+date: "10/19/2020"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(leaflet)
+library(RColorBrewer)
+```
+
+```{r}
+library(p8105.datasets)
+
+data(nyc_airbnb)
+nyc_airbnb =
+  nyc_airbnb %>%
+  mutate(stars = review_scores_location/2)
+
+```
+
+## Creat a leaflet map (color; viridis, magma etc.)
+
+```{r}
+pal <- colorNumeric("magma", nyc_airbnb%>%pull(stars))
+
+nyc_airbnb %>%
+  drop_na(stars)%>%
+  sample_n(5000)%>%
+  leaflet()%>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircleMarkers(~lat, ~long, radius = 1, color =~pal(stars))
+
+```
